@@ -199,6 +199,7 @@
     <button id="prev-chapter">Предыдущая глава</button>
     <button id="next-chapter">Следующая глава</button>
     <button id="theme-toggle">Переключить тему</button>
+    <button id="random-chapter">Случайная глава 🎲</button>
   </div>
 
   <main id="reader">
@@ -497,6 +498,13 @@
 
     // Подсвечиваем первую главу при загрузке
     document.querySelector('.chapter-btn[data-index="0"]').classList.add('active');
+   // Кнопка "Случайная глава"
+    document.getElementById('random-chapter').addEventListener('click', () => {
+    // Генерируем случайный индекс от 0 до chapters.length - 1
+    const randomIndex = Math.floor(Math.random() * chapters.length);
+    // Показываем случайную главу
+    showChapter(randomIndex);
+    });
   </script>
 </body>
 </html>
