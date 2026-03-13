@@ -166,28 +166,58 @@ header h2::before {
     }
 
     /* Кнопки */
-    button {
-      background: #222;
-      color: #ffd700;
-      border: 1px solid #444;
-      padding: 12px 24px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 1rem;
-      transition: all 0.2s;
-    }
+ .controls-bottom {
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(17, 17, 17, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 12px 20px;
+  display: flex;
+  justify-content: center;        /* центрируем */
+  align-items: center;
+  gap: 10px;                      /* основной отступ между кнопками */
+  border-top: 1px solid #333;
+  box-shadow: 0 -6px 20px rgba(0,0,0,0.6);
+  z-index: 100;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
 
-    button:hover {
-      background: #333;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(255, 215, 0, 0.15);
-    }
+.controls-bottom::-webkit-scrollbar {
+  display: none;
+}
 
-    button:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-      transform: none;
-    }
+.controls-bottom button {
+  padding: 10px 16px;
+  font-size: 0.95rem;
+  min-width: 90px;
+  white-space: nowrap;
+  border-radius: 8px;
+  background: #222;
+  color: #ffd700;
+  border: 1px solid #444;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+/* На мобильных делаем кнопки компактнее и отступы меньше */
+@media (max-width: 600px) {
+  .controls-bottom {
+    padding: 10px 12px;
+    gap: 8px;                     /* уменьшаем расстояние */
+  }
+  .controls-bottom button {
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    min-width: 70px;              /* кнопки становятся уже */
+  }
+}
+    
 
     /* Список глав */
     #chapter-list {
@@ -236,10 +266,50 @@ header h2::before {
         font-size: 1.15rem;
       }
     }
+    .side-images {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none; /* не мешают кликам */
+  z-index: -2; /* под всем контентом */
+  overflow: hidden;
+}
+
+.side-left,
+.side-right {
+  position: absolute;
+  width: 35%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.15; /* полупрозрачные */
+  filter: brightness(0.4) contrast(1.2) sepia(0.3);
+}
+
+.side-left {
+  left: 0;
+  transform: translateX(-20%) scale(1.2); /* чуть больше и сдвинуто */
+}
+
+.side-right {
+  right: 0;
+  transform: translateX(20%) scale(1.2);
+}
+
+/* На мобильных убираем боковые картинки, чтобы не съедали место */
+@media (max-width: 1024px) {
+  .side-images {
+    display: none;
+  }
+}
   </style>
 </head>
 <body>
-
+<div class="side-images">
+  <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&q=80&w=800" alt="Тёмный город" class="side-left">
+  <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&q=80&w=800" alt="Тени и дождь" class="side-right">
+</div>
 <header>
   <h1>Ранобэ Читалка</h1>
   <h2 class="ghost-title">
@@ -259,12 +329,7 @@ header h2::before {
     <div id="chapters-container"></div>
   </div>
 
-  <div style="text-align: center; margin: 20px 0;">
-    <button id="prev-chapter">Предыдущая глава</button>
-    <button id="next-chapter">Следующая глава</button>
-    <button id="theme-toggle">Переключить тему</button>
-    <button id="random-chapter">Случайная глава 🎲</button>
-  </div>
+  
 
   <main id="reader">
     <h2 id="chapter-title"></h2>
@@ -273,6 +338,15 @@ header h2::before {
     </div>
     <div id="chapter-text"></div>
   </main>
+
+ <div class="controls-bottom">
+  <button id="prev-chapter" title="Предыдущая глава">← Предыдущая</button>
+  <button id="random-chapter" title="Случайная глава">🎲</button>
+  <button id="next-chapter" title="Следующая глава">Следующая →</button>
+  <button id="theme-toggle" title="Сменить тему">🌙 / ☀️</button>
+  <button id="scroll-top" title="Наверх">↑</button>
+</div>
+
 
   <script>
     const chapters = [
@@ -648,6 +722,17 @@ header h2::before {
     // Показываем случайную главу
     showChapter(randomIndex);
     });
+
+    // Показываем кнопку "Наверх" при прокрутке
+window.addEventListener('scroll', () => {
+  document.getElementById('scroll-top').style.display = 
+    window.scrollY > 400 ? 'block' : 'none';
+});
+
+// Прокрутка наверх плавно
+document.getElementById('scroll-top').addEventListener('click', () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
   </script>
 </body>
 </html>
